@@ -1,56 +1,94 @@
 #ifndef _H_ORGBKTYYC_MATRIXEE_MATRIX_
 #define _H_ORGBKTYYC_MATRIXEE_MATRIX_
 
-typedef enum {
+//declare some type
+
+typedef enum
+{
 	OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE
-}OrgBktYyc_MartixEE_Matrix_enumMatrixType;
+} OrgBktYyc_MartixEE_Matrix_enumMatrixType;
 
-typedef enum {
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_COLUMS,
+typedef enum
+{
+	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_COLUMNS,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_ROWS
-}OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType;
+} OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType;
 
-typedef enum {
-	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD, 
+typedef enum
+{
+	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY
-}OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType;
+} OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType;
 
-typedef struct {
-	void *p;
+//declare matrix basic unit
+
+typedef union {
+	int itemINTEGER;
+	double itemDOUBLE;
+} OrgBktYyc_MartixEE_Matrix_unionMatrixItem;
+
+OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init(
+	OrgBktYyc_MartixEE_Matrix_enumMatrixType inputType,
+	void *num);
+
+void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj);
+
+void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Upgrade(
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj);
+
+//declre matrix struct
+
+typedef struct
+{
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *p;
 	OrgBktYyc_MartixEE_Matrix_enumMatrixType type;
 	int rows;
-	int colums;
-}OrgBktYyc_MartixEE_Matrix_classMatrix;
+	int columns;
+} OrgBktYyc_MartixEE_Matrix_classMatrix;
 
+//init matrix
 OrgBktYyc_MartixEE_Matrix_classMatrix *OrgBktYyc_MartixEE_Matrix_classMatrix_Init(
-	int rows, 
-	int colums, 
-	OrgBktYyc_MartixEE_Matrix_enumMatrixType type
-	);
-	
+	int rows,
+	int columns,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixType type);
+
+//free matrix
 void OrgBktYyc_MartixEE_Matrix_classMatrix_Dispose(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj);
-	
+
+//upgrade matrix. from int to double
+void OrgBktYyc_MartixEE_Matrix_classMatrix_Upgrade(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj);
+
+//swap 2 columns or rows
 void OrgBktYyc_MartixEE_Matrix_classMatrix_Swap(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType mode,
-	int originLine,
-	int targetLine);
-	
+	int originIndex,
+	int targetIndex);
+
+//do some calculation for specific row or columns
 void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType affectMode,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType operationMode,
 	int targetIndex,
-	void *num);
-	
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *num);
+
+//basic matrix fransform
 void OrgBktYyc_MartixEE_Matrix_classMatrix_AddInto(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType mode,
-	int originLine,
-	int targetLine,
-	void *num);
+	int originIndex,
+	int targetIndex,
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *num);
+
+OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
+	int rowIndex,
+	int columnsIndex);
 
 void OrgBktYyc_MartixEE_Matrix_classMatrix_Print(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj);

@@ -1,5 +1,181 @@
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "matrix.h"
+#include "utility.h"
 
+/*==================================================================================================*/
 
+OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init(
+	OrgBktYyc_MartixEE_Matrix_enumMatrixType inputType,
+	void *num)
+{
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *res =
+		(OrgBktYyc_MartixEE_Matrix_unionMatrixItem *)malloc(sizeof(OrgBktYyc_MartixEE_Matrix_unionMatrixItem));
+	switch (inputType)
+	{
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
+		res->itemINTEGER = *(int *)num;
+		break;
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
+		res->itemDOUBLE = *(double *)num;
+		break;
+	}
 
+	return res;
+}
 
+void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj)
+{
+	free(obj);
+}
+
+void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Upgrade(
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj)
+{
+	(obj->itemDOUBLE) = (double)(obj->itemINTEGER);
+}
+
+/*==================================================================================================*/
+
+OrgBktYyc_MartixEE_Matrix_classMatrix *OrgBktYyc_MartixEE_Matrix_classMatrix_Init(
+	int rows,
+	int columns,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixType type)
+{
+	OrgBktYyc_MartixEE_Matrix_classMatrix *res =
+		(OrgBktYyc_MartixEE_Matrix_classMatrix *)malloc(sizeof(OrgBktYyc_MartixEE_Matrix_classMatrix));
+	res->columns = columns;
+	res->rows = rows;
+	res->type = type;
+	res->p = (OrgBktYyc_MartixEE_Matrix_unionMatrixItem *)malloc(sizeof(OrgBktYyc_MartixEE_Matrix_unionMatrixItem) * rows * columns);
+	return res;
+}
+
+void OrgBktYyc_MartixEE_Matrix_classMatrix_Dispose(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj)
+{
+	free(obj->p);
+	free(obj);
+}
+
+void OrgBktYyc_MartixEE_Matrix_classMatrix_Upgrade(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj)
+{
+	int i, j;
+	for (i = 0; i < obj->rows; i++)
+	{
+		for (j = 0; j < obj->columns; j++)
+		{
+			OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Upgrade(obj->p + i * obj->columns + j);
+		}
+	}
+}
+
+void OrgBktYyc_MartixEE_Matrix_classMatrix_Swap(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType mode,
+	int originIndex,
+	int targetIndex)
+{
+	//todo
+}
+
+void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType affectMode,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType operationMode,
+	int targetIndex,
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *num)
+{
+	int rowMin, rowMax, colMin, colMax;
+	switch (affectMode)
+	{
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_COLUMNS:
+		rowMin = 0;
+		rowMax = obj->rows - 1;
+		colMin = colMax = targetIndex;
+		break;
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_ROWS:
+		colMin = 0;
+		colMax = obj->columns - 1;
+		rowMin = rowMax = targetIndex;
+		break;
+	}
+	int i, j;
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *cache = NULL;
+	for (i = rowMin; i <= rowMax; i++)
+	{
+		for (j = colMin; j <= rowMax; j++)
+		{
+			cache = OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj,i,j);
+			switch (obj->type)
+			{
+				case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
+					switch (operationMode)
+					{
+						case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD:
+							cache->itemDOUBLE+=num->itemDOUBLE;
+							break;
+						case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY:
+							cache->itemDOUBLE*=num->itemDOUBLE;
+							break;
+					}
+					break;
+				case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
+					switch (operationMode)
+					{
+						case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD:
+							cache->itemINTEGER+=num->itemINTEGER;
+							break;
+						case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY:
+							cache->itemINTEGER*=num->itemINTEGER;
+							break;
+					}
+					break;
+			}
+		}
+	}
+}
+
+void OrgBktYyc_MartixEE_Matrix_classMatrix_AddInto(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType mode,
+	int originIndex,
+	int targetIndex,
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *num)
+{
+	//todo
+}
+
+OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
+	int rowIndex,
+	int columnsIndex)
+{
+	return obj->p + rowIndex * obj->columns + columnsIndex;
+}
+
+void OrgBktYyc_MartixEE_Matrix_classMatrix_Print(
+	OrgBktYyc_MartixEE_Matrix_classMatrix *obj)
+{
+	int i, j;
+	for (i = 0; i < obj->rows; i++)
+	{
+		for (j = 0; j < obj->columns; j++)
+		{
+			switch (obj->type)
+			{
+			case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
+				printf("%d", OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, j)->itemINTEGER);
+				break;
+			case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
+				printf("%lf", OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, j)->itemDOUBLE);
+				break;
+			}
+			printf("\t");
+		}
+		printf("\n");
+	}
+}
