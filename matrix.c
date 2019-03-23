@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "matrix.h"
-#include "utility.h"
 
 /*==================================================================================================*/
 
@@ -35,6 +34,26 @@ void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Upgrade(
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj)
 {
 	(obj->itemDOUBLE) = (double)(obj->itemINTEGER);
+}
+
+void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Swap(
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *origin,
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *target,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixType swapMode)
+{
+	switch (swapMode)
+	{
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:;
+		int intCache = origin->itemINTEGER;
+		origin->itemINTEGER = target->itemINTEGER;
+		target->itemINTEGER = intCache;
+		break;
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:;
+		double doubleCache = origin->itemDOUBLE;
+		origin->itemDOUBLE = target->itemDOUBLE;
+		target->itemDOUBLE = doubleCache;
+		break;
+	}
 }
 
 /*==================================================================================================*/
@@ -75,16 +94,33 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Upgrade(
 
 void OrgBktYyc_MartixEE_Matrix_classMatrix_Swap(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType mode,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType mode,
 	int originIndex,
 	int targetIndex)
 {
-	//todo
+	int i;
+	switch (mode)
+	{
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS:
+		for (i = 0; i < obj->columns; i++)
+			OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Swap(
+				OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, originIndex, i),
+				OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, targetIndex, i),
+				obj->type);
+		break;
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS:
+		for (i = 0; i < obj->rows; i++)
+			OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Swap(
+				OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, originIndex),
+				OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, targetIndex),
+				obj->type);
+		break;
+	}
 }
 
 void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType affectMode,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType affectMode,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType operationMode,
 	int targetIndex,
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *num)
@@ -92,12 +128,12 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 	int rowMin, rowMax, colMin, colMax;
 	switch (affectMode)
 	{
-	case OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_COLUMNS:
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS:
 		rowMin = 0;
 		rowMax = obj->rows - 1;
 		colMin = colMax = targetIndex;
 		break;
-	case OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_ROWS:
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS:
 		colMin = 0;
 		colMax = obj->columns - 1;
 		rowMin = rowMax = targetIndex;
@@ -109,31 +145,31 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 	{
 		for (j = colMin; j <= rowMax; j++)
 		{
-			cache = OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj,i,j);
+			cache = OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, j);
 			switch (obj->type)
 			{
-				case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
-					switch (operationMode)
-					{
-						case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD:
-							cache->itemDOUBLE+=num->itemDOUBLE;
-							break;
-						case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY:
-							cache->itemDOUBLE*=num->itemDOUBLE;
-							break;
-					}
+			case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
+				switch (operationMode)
+				{
+				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD:
+					cache->itemDOUBLE += num->itemDOUBLE;
 					break;
-				case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
-					switch (operationMode)
-					{
-						case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD:
-							cache->itemINTEGER+=num->itemINTEGER;
-							break;
-						case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY:
-							cache->itemINTEGER*=num->itemINTEGER;
-							break;
-					}
+				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY:
+					cache->itemDOUBLE *= num->itemDOUBLE;
 					break;
+				}
+				break;
+			case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
+				switch (operationMode)
+				{
+				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD:
+					cache->itemINTEGER += num->itemINTEGER;
+					break;
+				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY:
+					cache->itemINTEGER *= num->itemINTEGER;
+					break;
+				}
+				break;
 			}
 		}
 	}
@@ -141,12 +177,45 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 
 void OrgBktYyc_MartixEE_Matrix_classMatrix_AddInto(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType mode,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType mode,
 	int originIndex,
 	int targetIndex,
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *num)
 {
-	//todo
+	int i;
+	switch (obj->type)
+	{
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:;
+		switch (mode)
+		{
+		case OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS:
+			for (i = 0; i < obj->columns; i++)
+				OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, targetIndex, i)->itemDOUBLE +=
+					num->itemDOUBLE * OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, originIndex, i)->itemDOUBLE;
+			break;
+		case OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS:
+			for (i = 0; i < obj->rows; i++)
+				OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, targetIndex)->itemDOUBLE +=
+					num->itemDOUBLE * OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, originIndex)->itemDOUBLE;
+			break;
+		}
+		break;
+	case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
+		switch (mode)
+		{
+		case OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS:
+			for (i = 0; i < obj->columns; i++)
+				OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, targetIndex, i)->itemINTEGER +=
+					num->itemINTEGER * OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, originIndex, i)->itemINTEGER;
+			break;
+		case OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS:
+			for (i = 0; i < obj->rows; i++)
+				OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, targetIndex)->itemINTEGER +=
+					num->itemINTEGER * OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, originIndex)->itemINTEGER;
+			break;
+		}
+		break;
+	}
 }
 
 OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(

@@ -11,9 +11,9 @@ typedef enum
 
 typedef enum
 {
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_COLUMNS,
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType_ROWS
-} OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType;
+	OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS
+} OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType;
 
 typedef enum
 {
@@ -37,6 +37,11 @@ void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(
 
 void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Upgrade(
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj);
+
+void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Swap(
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *origin,
+	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *target,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixType swapMode);
 
 //declre matrix struct
 
@@ -65,14 +70,14 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Upgrade(
 //swap 2 columns or rows
 void OrgBktYyc_MartixEE_Matrix_classMatrix_Swap(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType mode,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType mode,
 	int originIndex,
 	int targetIndex);
 
 //do some calculation for specific row or columns
 void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType affectMode,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType affectMode,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType operationMode,
 	int targetIndex,
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *num);
@@ -80,7 +85,7 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 //basic matrix fransform
 void OrgBktYyc_MartixEE_Matrix_classMatrix_AddInto(
 	OrgBktYyc_MartixEE_Matrix_classMatrix *obj,
-	OrgBktYyc_MartixEE_Matrix_enumMatrixSwapType mode,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType mode,
 	int originIndex,
 	int targetIndex,
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *num);
