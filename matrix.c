@@ -5,23 +5,9 @@
 
 /*==================================================================================================*/
 
-OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init(
-	OrgBktYyc_MartixEE_Matrix_enumMatrixType inputType,
-	void *num)
+OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init()
 {
-	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *res =
-		(OrgBktYyc_MartixEE_Matrix_unionMatrixItem *)malloc(sizeof(OrgBktYyc_MartixEE_Matrix_unionMatrixItem));
-	switch (inputType)
-	{
-	case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
-		res->itemINTEGER = *(int *)num;
-		break;
-	case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
-		res->itemDOUBLE = *(double *)num;
-		break;
-	}
-
-	return res;
+	return (OrgBktYyc_MartixEE_Matrix_unionMatrixItem *)malloc(sizeof(OrgBktYyc_MartixEE_Matrix_unionMatrixItem));
 }
 
 void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(
@@ -151,8 +137,8 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 			case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
 				switch (operationMode)
 				{
-				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD:
-					cache->itemDOUBLE += num->itemDOUBLE;
+				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_DIVISION:
+					cache->itemDOUBLE /= num->itemDOUBLE;
 					break;
 				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY:
 					cache->itemDOUBLE *= num->itemDOUBLE;
@@ -162,8 +148,8 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 			case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
 				switch (operationMode)
 				{
-				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD:
-					cache->itemINTEGER += num->itemINTEGER;
+				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_DIVISION:
+					cache->itemINTEGER /= num->itemINTEGER;
 					break;
 				case OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY:
 					cache->itemINTEGER *= num->itemINTEGER;

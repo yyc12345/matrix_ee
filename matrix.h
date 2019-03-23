@@ -17,7 +17,7 @@ typedef enum
 
 typedef enum
 {
-	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_ADD,
+	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_DIVISION,
 	OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY
 } OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType;
 
@@ -28,9 +28,7 @@ typedef union {
 	double itemDOUBLE;
 } OrgBktYyc_MartixEE_Matrix_unionMatrixItem;
 
-OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init(
-	OrgBktYyc_MartixEE_Matrix_enumMatrixType inputType,
-	void *num);
+OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init();
 
 void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj);
