@@ -16,15 +16,15 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
 
     //declare the value which will be used
     char command;
-    char swapAffect1, swapAffect2, operationAffect, operationOperator, addIntoAffect1, addIntoAffect2, addIntoMultiplyInt;
-    int swapIndex1, swapIndex2, operationIndex, operationInt, addIntoIndex1, addIntoIndex2;
+    char swapAffect1, swapAffect2, operationAffect, operationOperator, addIntoAffect1, addIntoAffect2;
+    int swapIndex1, swapIndex2, operationIndex, operationInt, addIntoIndex1, addIntoIndex2, addIntoMultiplyInt;
     double operationDouble, addIntoMultiplyDouble;
     OrgBktYyc_MartixEE_Matrix_unionMatrixItem *sharedNum = OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init();
     while (true)
     {
-        OrgBktYyc_MartixEE_Matrix_classMatrix_Print(mt);
         printf("\nmatrix_ee - matrix_hand> ");
-        command = getchar();
+        if((command = getchar()) == '\n') continue;
+
         switch (command)
         {
         case 'u':
@@ -47,6 +47,10 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
                     swapType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS;
                     break;
                 }
+
+                //correct parameter
+                swapIndex1--;
+                swapIndex2--;
 
                 OrgBktYyc_MartixEE_Matrix_classMatrix_Swap(mt, swapType, swapIndex1, swapIndex2);
             }
@@ -91,6 +95,9 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
                     break;
                 }
 
+                //correct parameter
+                operationIndex--;
+
                 OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(mt, operationType, operatorType, operationIndex, sharedNum);
             }
             else
@@ -124,6 +131,10 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
                     break;
                 }
 
+                //correct parameter
+                addIntoIndex1--;
+                addIntoIndex2--;
+
                 OrgBktYyc_MartixEE_Matrix_classMatrix_AddInto(mt, addIntoType, addIntoIndex2, addIntoIndex1, sharedNum);
             }
             else
@@ -136,6 +147,9 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
             printf("Unknow command!\n");
             break;
         }
+
+        //display res
+        OrgBktYyc_MartixEE_Matrix_classMatrix_Print(mt);
     }
 
 endCalcFunction:
@@ -169,7 +183,7 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Help()
 OrgBktYyc_MartixEE_Matrix_classMatrix *OrgBktYyc_MartixEE_Module_MatrixHand_InitMatrix()
 {
     int rows, columns;
-    printf("Input your matrix's rows and columns' count. Such as: 4 3 will construct a matrix with 4 rows and 3 columns.");
+    printf("Input your matrix's rows and columns' count. Such as: 4 3 will construct a matrix with 4 rows and 3 columns.\n");
     scanf("%d%d", &rows, &columns);
     if (rows <= 0 || columns <= 0)
     {
@@ -178,8 +192,8 @@ OrgBktYyc_MartixEE_Matrix_classMatrix *OrgBktYyc_MartixEE_Module_MatrixHand_Init
     }
 
     OrgBktYyc_MartixEE_Matrix_enumMatrixType type;
-    int i;
-    printf("Input your matrix type. 0 for Integer. 1 for Double.");
+    int i, j;
+    printf("Input your matrix type. 0 for Integer. 1 for Double.\n");
     scanf("%d", &i);
     switch (i)
     {
@@ -194,7 +208,38 @@ OrgBktYyc_MartixEE_Matrix_classMatrix *OrgBktYyc_MartixEE_Module_MatrixHand_Init
         return NULL;
     }
 
-    return OrgBktYyc_MartixEE_Matrix_classMatrix_Init(rows, columns, type);
+    OrgBktYyc_MartixEE_Matrix_classMatrix *res = OrgBktYyc_MartixEE_Matrix_classMatrix_Init(rows, columns, type);
+
+    //int i, j;
+    printf("Now, please input data one by one for each rows.\n");
+    switch (res->type)
+    {
+    case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:;
+        double cacheDouble;
+        for (i = 0; i < res->rows; i++)
+        {
+            for (j = 0; j < res->columns; j++)
+            {
+                scanf("%lf", &cacheDouble);
+                OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(res, i, j)->itemDOUBLE = cacheDouble;
+            }
+        }
+        break;
+
+    case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:;
+        int cacheInt;
+        for (i = 0; i < res->rows; i++)
+        {
+            for (j = 0; j < res->columns; j++)
+            {
+                scanf("%d", &cacheInt);
+                OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(res, i, j)->itemINTEGER = cacheInt;
+            }
+        }
+        break;
+    }
+
+    return res;
 }
 
 bool OrgBktYyc_MartixEE_Module_MatrixHand_CheckSwapInput(
@@ -206,6 +251,7 @@ bool OrgBktYyc_MartixEE_Module_MatrixHand_CheckSwapInput(
         return false;
     if (a1 != 'c' && a1 != 'r')
         return false;
+
     return true;
 }
 
@@ -218,6 +264,7 @@ bool OrgBktYyc_MartixEE_Module_MatrixHand_CheckOperationInput(
         return false;
     if (optr != '*' && optr != '/')
         return false;
+
     return true;
 }
 

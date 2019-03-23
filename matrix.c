@@ -129,7 +129,7 @@ void OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *cache = NULL;
 	for (i = rowMin; i <= rowMax; i++)
 	{
-		for (j = colMin; j <= rowMax; j++)
+		for (j = colMin; j <= colMax; j++)
 		{
 			cache = OrgBktYyc_MartixEE_Matrix_classMatrix_GetItem(obj, i, j);
 			switch (obj->type)
