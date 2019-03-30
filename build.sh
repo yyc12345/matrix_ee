@@ -2,7 +2,7 @@
 compiler="clang"
 obj="main.o utility.o matrix.o regular_expression.o module/matrix_hand.o module/matrix_auto.o"
 target="matrix.out"
-command="-std=c11"
+command="-std=c11 -g"
 
 #rm
 rm -f $obj $target &&

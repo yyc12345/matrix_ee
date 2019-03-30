@@ -7,10 +7,12 @@
 #include "../matrix.h"
 #include "../utility.h"
 
+char OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Swap[] = "(c|r)([0-9]+)~(c|r)([0-9]+)";
+char OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Operation[] = "(c|r)([0-9]+)((\\*|/)([0-9]+))";
+char OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_AddInto[] = "(c|r)([0-9]+)((\\+|-){0,1}[0-9]*)(c|r)([0-9]+)";
+
 void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
 {
-    //output help
-    OrgBktYyc_MartixEE_Module_MatrixHand_Help();
     //init matrix
     OrgBktYyc_MartixEE_Matrix_classMatrix *mt = OrgBktYyc_MartixEE_Module_MatrixHand_InitMatrix();
     if (mt == NULL)
@@ -33,11 +35,11 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
             OrgBktYyc_MartixEE_Matrix_classMatrix_Upgrade(mt);
         else if (!strcmp(command, "show"))
             OrgBktYyc_MartixEE_Matrix_classMatrix_Print(mt);
-        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, "(c|r)([0-9]+)~(c|r)([0-9]+)"))
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Swap))
             OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperSwap(mt, command);
-        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, "(c|r)([0-9]+)((?:\\*|/)[0-9]+)"))
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Operation))
             OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperMultiply(mt, command);
-        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, "(c|r)([0-9]+)((?:\\+|-){0,1}[0-9]+)(c|r)([0-9]+)"))
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_AddInto))
             OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperAddInto(mt, command);
         else
             printf("Unknow command!\n");
@@ -265,7 +267,40 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperSwap(
     OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
     char *command)
 {
-    printf("Swap OK\n");
+    //get data
+    OrgBktYyc_MartixEE_RegularExpression_Result *sp =
+        OrgBktYyc_MartixEE_RegularExpression_Matches(command, OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Swap);
+
+    char affect1 = *(command + ((sp->result + 1)->rm_so)),
+         affect2 = *(command + ((sp->result + 3)->rm_so));
+    int index1 = OrgBktYyc_MartixEE_Utility_IntParse(command, (sp->result + 2)->rm_so),
+        index2 = OrgBktYyc_MartixEE_Utility_IntParse(command, (sp->result + 4)->rm_so);
+    //free resources
+    OrgBktYyc_MartixEE_RegularExpression_Result_Free(sp);
+
+    //judge data
+    if (OrgBktYyc_MartixEE_Module_MatrixHand_CheckSwapInput(affect1, index1, affect2, index2))
+    {
+        //calc type
+        OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType swapType;
+        switch (affect1)
+        {
+        case 'c':
+            swapType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS;
+            break;
+        case 'r':
+            swapType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS;
+            break;
+        }
+
+        //correct parameter
+        index1--;
+        index2--;
+
+        OrgBktYyc_MartixEE_Matrix_classMatrix_Swap(mt, swapType, index1, index2);
+    }
+    else
+        printf("Illegal parameter!\n");
 }
 void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperMultiply(
     OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
