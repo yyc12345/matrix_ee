@@ -33,11 +33,11 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
             OrgBktYyc_MartixEE_Matrix_classMatrix_Upgrade(mt);
         else if (!strcmp(command, "show"))
             OrgBktYyc_MartixEE_Matrix_classMatrix_Print(mt);
-        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, ""))
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, "(c|r)([0-9]+)~(c|r)([0-9]+)"))
             OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperSwap(mt, command);
-        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, ""))
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, "(c|r)([0-9]+)((?:\\*|/)[0-9]+)"))
             OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperMultiply(mt, command);
-        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, ""))
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, "(c|r)([0-9]+)((?:\\+|-){0,1}[0-9]+)(c|r)([0-9]+)"))
             OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperAddInto(mt, command);
         else
             printf("Unknow command!\n");
@@ -265,16 +265,19 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperSwap(
     OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
     char *command)
 {
+    printf("Swap OK\n");
 }
 void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperMultiply(
     OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
     char *command)
 {
+    printf("Operation OK\n");
 }
 void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperAddInto(
     OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
     char *command)
 {
+    printf("AddInto OK\n");
 }
 
 //=================================================================================================================================

@@ -41,6 +41,6 @@ void help()
 	printf("\tmatrix-auto - Full automatically matrix calculation (experimental) (for ee calc)\n");
 	printf("\tComing soon...\n");
 	printf("\n");
-	printf("exit - exit matrix_ee\n");
-	printf("help - print this message\n");
+	printf("\texit - exit matrix_ee\n");
+	printf("\thelp - print this message\n");
 }
