@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "matrix_hand.h"
+#include "../regular_expression.h"
 #include "../matrix.h"
 #include "../utility.h"
 
@@ -15,16 +17,32 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
         return;
 
     //declare the value which will be used
-    char command;
-    char swapAffect1, swapAffect2, operationAffect, operationOperator, addIntoAffect1, addIntoAffect2;
-    int swapIndex1, swapIndex2, operationIndex, operationInt, addIntoIndex1, addIntoIndex2, addIntoMultiplyInt;
-    double operationDouble, addIntoMultiplyDouble;
+    char command[COMMAND_BUFFER_SIZE];
     OrgBktYyc_MartixEE_Matrix_unionMatrixItem *sharedNum = OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init();
+
     while (true)
     {
-        printf("\nmatrix_ee - matrix_hand> ");
-        if((command = getchar()) == '\n') continue;
+        printf("matrix_ee - matrix_hand> ");
+        OrgBktYyc_MartixEE_Utility_ReadLine(command);
 
+        if (!strcmp(command, "help"))
+            OrgBktYyc_MartixEE_Module_MatrixHand_Help();
+        else if (!strcmp(command, "exit"))
+            break;
+        else if (!strcmp(command, "upgrade"))
+            OrgBktYyc_MartixEE_Matrix_classMatrix_Upgrade(mt);
+        else if (!strcmp(command, "show"))
+            OrgBktYyc_MartixEE_Matrix_classMatrix_Print(mt);
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, ""))
+            OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperSwap(mt, command);
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, ""))
+            OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperMultiply(mt, command);
+        else if (OrgBktYyc_MartixEE_RegularExpression_IsMatch(command, ""))
+            OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperAddInto(mt, command);
+        else
+            printf("Unknow command!\n");
+
+        /*
         switch (command)
         {
         case 'u':
@@ -150,9 +168,9 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
 
         //display res
         OrgBktYyc_MartixEE_Matrix_classMatrix_Print(mt);
+        */
     }
 
-endCalcFunction:
     //release resources
     OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(sharedNum);
     OrgBktYyc_MartixEE_Matrix_classMatrix_Dispose(mt);
@@ -162,23 +180,24 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Help()
 {
     printf("Help\n");
     printf("\n");
-    printf("Format: [char tag][parameter]\n");
-    printf("\tu - upgrade matrix (from int to double)\n");
-    printf("\ts - swap 2 columns or rows\n");
-    printf("\t\ts[c|r][index]-[c|r][index]\n");
-    printf("\to - do operation for specific rows or colums\n");
-    printf("\t\to[c|r][index][*|/][number]\n");
-    printf("\ta - add one columns or rows into another\n");
-    printf("\ta[c|r][target-index][multply-number(positive or negative)][c|r][origin-index]\n");
+    printf("Operation command: (In short words, you can input command just with normal math formation)\n");
+    printf("\t[c|r][index]~[c|r][index] - swap 2 columns or rows\n");
+    printf("\t[c|r][index][*|/][number] - do operation for specific rows or colums\n");
+    printf("\t[c|r][target-index][multply-number(positive or negative)(default in 1 if you omit this)][c|r][origin-index] - add one columns or rows into another\n");
     printf("\n");
     printf("Example:\n");
-    printf("\tu\n");
-    printf("\tsc1-c2\n");
-    printf("\tor3*4\n");
-    printf("\tac3-5c2\n");
+    printf("\tc1~c2\n");
+    printf("\tr3*2\n");
+    printf("\tc3-5c2\n");
     printf("\n");
-    printf("e - exit\n");
+    printf("Global command:\n");
+    printf("\tshow - display current matrix's status\n");
+    printf("\tupgrade - upgrade matrix (from int to double)\n");
+    printf("\thelp - print this message\n");
+    printf("\texit - exit matrix_ee-matrix_hand\n");
 }
+
+//===================================================================================================================================
 
 OrgBktYyc_MartixEE_Matrix_classMatrix *OrgBktYyc_MartixEE_Module_MatrixHand_InitMatrix()
 {
@@ -241,6 +260,24 @@ OrgBktYyc_MartixEE_Matrix_classMatrix *OrgBktYyc_MartixEE_Module_MatrixHand_Init
 
     return res;
 }
+
+void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperSwap(
+    OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
+    char *command)
+{
+}
+void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperMultiply(
+    OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
+    char *command)
+{
+}
+void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperAddInto(
+    OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
+    char *command)
+{
+}
+
+//=================================================================================================================================
 
 bool OrgBktYyc_MartixEE_Module_MatrixHand_CheckSwapInput(
     char a1, int i1, char a2, int i2)

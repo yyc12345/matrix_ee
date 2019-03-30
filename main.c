@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "utility.h"
 #include "matrix.h"
@@ -8,40 +9,38 @@
 #include "module/matrix_auto.h"
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
-void menu();
+void help();
 
 int main(int argc, char *argv[])
 {
-	int command;
+	printf("Welcome to use matrix_ee~\n");
+	char command[COMMAND_BUFFER_SIZE];
 	while (true)
 	{
-		menu();
 		printf("matrix_ee> ");
-		scanf("%d", &command);
-		switch (command)
-		{
-		case 0:
-			return 0;
-		case 1:
+		OrgBktYyc_MartixEE_Utility_ReadLine(command);
+
+		if (!strcmp(command, "help"))
+			help();
+		else if (!strcmp(command, "exit"))
+			break;
+		else if (!strcmp(command, "matrix-hand"))
 			OrgBktYyc_MartixEE_Module_MatrixHand_Main();
-			break;
-		case 2:
+		else if (!strcmp(command, "matrix-auto"))
 			OrgBktYyc_MartixEE_Module_MatrixAuto_Main();
-			break;
-		default:
+		else
 			printf("Error command!\n");
-			break;
-		}
 	}
 }
 
-void menu()
+void help()
 {
-	printf("Menu:\n");
+	printf("Help\n");
 	printf("\n");
-	printf("1 - Matrix with hand calculation\n");
-	printf("2 - Full automatically matrix calculation (experimental) (for ee calc)\n");
+	printf("\tmatrix-hand - Matrix with hand calculation\n");
+	printf("\tmatrix-auto - Full automatically matrix calculation (experimental) (for ee calc)\n");
+	printf("\tComing soon...\n");
 	printf("\n");
-	printf("0 - exit\n");
-	printf("Coming soon...\n");
+	printf("exit - exit matrix_ee\n");
+	printf("help - print this message\n");
 }

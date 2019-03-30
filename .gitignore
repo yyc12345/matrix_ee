@@ -6,6 +6,9 @@
 *.layout
 *.dev
 
+# Personal build script for windows
+*.bat
+
 # Prerequisites
 *.d
 
