@@ -8,8 +8,8 @@
 #include "../utility.h"
 
 char OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Swap[] = "(c|r)([0-9]+)~(c|r)([0-9]+)";
-char OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Operation[] = "(c|r)([0-9]+)((\\*|/)([0-9]+))";
-char OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_AddInto[] = "(c|r)([0-9]+)((\\+|-){0,1}[0-9]*)(c|r)([0-9]+)";
+char OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Operation[] = "(c|r)([0-9]+)(\\*|/)((\\+|-){0,1}([0-9]*))";
+char OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_AddInto[] = "(c|r)([0-9]+)((\\+|-){1}([0-9]*))(c|r)([0-9]+)";
 
 void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
 {
@@ -20,7 +20,6 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
 
     //declare the value which will be used
     char command[COMMAND_BUFFER_SIZE];
-    OrgBktYyc_MartixEE_Matrix_unionMatrixItem *sharedNum = OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init();
 
     while (true)
     {
@@ -44,137 +43,7 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
         else
             printf("Unknow command!\n");
 
-        /*
-        switch (command)
-        {
-        case 'u':
-            OrgBktYyc_MartixEE_Matrix_classMatrix_Upgrade(mt);
-            break;
-        case 's':
-            //read data
-            scanf("%c%d-%c%d", &swapAffect1, &swapIndex1, &swapAffect2, &swapIndex2);
-            //judge data
-            if (OrgBktYyc_MartixEE_Module_MatrixHand_CheckSwapInput(swapAffect1, swapIndex1, swapAffect2, swapIndex2))
-            {
-                //calc type
-                OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType swapType;
-                switch (swapAffect1)
-                {
-                case 'c':
-                    swapType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS;
-                    break;
-                case 'r':
-                    swapType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS;
-                    break;
-                }
-
-                //correct parameter
-                swapIndex1--;
-                swapIndex2--;
-
-                OrgBktYyc_MartixEE_Matrix_classMatrix_Swap(mt, swapType, swapIndex1, swapIndex2);
-            }
-            else
-                printf("Illegal parameter!\n");
-            break;
-        case 'o':
-            //read data
-            switch (mt->type)
-            {
-            case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
-                scanf("%c%d%c%lf", &operationAffect, &operationIndex, &operationOperator, &operationDouble);
-                sharedNum->itemDOUBLE = operationDouble;
-                break;
-            case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
-                scanf("%c%d%c%d", &operationAffect, &operationIndex, &operationOperator, &operationInt);
-                sharedNum->itemINTEGER = operationInt;
-                break;
-            }
-            //judge data
-            if (OrgBktYyc_MartixEE_Module_MatrixHand_CheckOperationInput(operationAffect, operationIndex, operationOperator))
-            {
-                //calc type
-                OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType operationType;
-                switch (operationAffect)
-                {
-                case 'c':
-                    operationType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS;
-                    break;
-                case 'r':
-                    operationType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS;
-                    break;
-                }
-                OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType operatorType;
-                switch (operationOperator)
-                {
-                case '*':
-                    operatorType = OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY;
-                    break;
-                case '/':
-                    operatorType = OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_DIVISION;
-                    break;
-                }
-
-                //correct parameter
-                operationIndex--;
-
-                OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(mt, operationType, operatorType, operationIndex, sharedNum);
-            }
-            else
-                printf("Illegal parameter!\n");
-            break;
-        case 'a':
-            //read data
-            switch (mt->type)
-            {
-            case OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE:
-                scanf("%c%d%lf%c%d", &addIntoAffect1, &addIntoIndex1, &addIntoMultiplyDouble, &addIntoAffect2, &addIntoIndex2);
-                sharedNum->itemDOUBLE = addIntoMultiplyDouble;
-                break;
-            case OrgBktYyc_MartixEE_Matrix_enumMatrixType_INTEGER:
-                scanf("%c%d%d%c%d", &addIntoAffect1, &addIntoIndex1, &addIntoMultiplyInt, &addIntoAffect2, &addIntoIndex2);
-                sharedNum->itemINTEGER = addIntoMultiplyInt;
-                break;
-            }
-            //judge data
-            if (OrgBktYyc_MartixEE_Module_MatrixHand_CheckAddIntoInput(addIntoAffect1, addIntoIndex1, addIntoAffect2, addIntoIndex2))
-            {
-                //calc type
-                OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType addIntoType;
-                switch (swapAffect1)
-                {
-                case 'c':
-                    addIntoType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS;
-                    break;
-                case 'r':
-                    addIntoType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS;
-                    break;
-                }
-
-                //correct parameter
-                addIntoIndex1--;
-                addIntoIndex2--;
-
-                OrgBktYyc_MartixEE_Matrix_classMatrix_AddInto(mt, addIntoType, addIntoIndex2, addIntoIndex1, sharedNum);
-            }
-            else
-                printf("Illegal parameter!\n");
-            break;
-        case 'e':
-            goto endCalcFunction;
-            break;
-        default:
-            printf("Unknow command!\n");
-            break;
-        }
-
-        //display res
-        OrgBktYyc_MartixEE_Matrix_classMatrix_Print(mt);
-        */
-    }
-
     //release resources
-    OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(sharedNum);
     OrgBktYyc_MartixEE_Matrix_classMatrix_Dispose(mt);
 }
 
@@ -306,13 +175,112 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperMultiply(
     OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
     char *command)
 {
-    printf("Operation OK\n");
+    //get data
+    OrgBktYyc_MartixEE_RegularExpression_Result *sp =
+        OrgBktYyc_MartixEE_RegularExpression_Matches(command, OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_Operation);
+
+    char operationAffect = *(command + ((sp->result + 1)->rm_so)),
+         operationOperator = *(command + ((sp->result + 3)->rm_so));
+    int operationIndex = OrgBktYyc_MartixEE_Utility_IntParse(command, (sp->result + 2)->rm_so);
+
+    OrgBktYyc_MartixEE_Matrix_unionMatrixItem sharedNum;
+    if (mt->type == OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE)
+        sharedNum.itemDOUBLE = OrgBktYyc_MartixEE_Utility_DoubleParse(command, (sp->result + 4)->rm_so);
+    else
+        sharedNum.itemINTEGER = OrgBktYyc_MartixEE_Utility_IntParse(command, (sp->result + 4)->rm_so);
+
+    //free resources
+    OrgBktYyc_MartixEE_RegularExpression_Result_Free(sp);
+
+    //judge data
+    if (OrgBktYyc_MartixEE_Module_MatrixHand_CheckOperationInput(operationAffect, operationIndex, operationOperator))
+    {
+        //calc type
+        OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType operationType;
+        switch (operationAffect)
+        {
+        case 'c':
+            operationType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS;
+            break;
+        case 'r':
+            operationType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS;
+            break;
+        }
+        OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType operatorType;
+        switch (operationOperator)
+        {
+        case '*':
+            operatorType = OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_MULTIPLY;
+            break;
+        case '/':
+            operatorType = OrgBktYyc_MartixEE_Matrix_enumMatrixOperationType_DIVISION;
+            break;
+        }
+
+        //correct parameter
+        operationIndex--;
+
+        OrgBktYyc_MartixEE_Matrix_classMatrix_Operation(mt, operationType, operatorType, operationIndex, &sharedNum);
+    }
+    else
+        printf("Illegal parameter!\n");
 }
 void OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperAddInto(
     OrgBktYyc_MartixEE_Matrix_classMatrix *mt,
     char *command)
 {
-    printf("AddInto OK\n");
+    //get data
+    OrgBktYyc_MartixEE_RegularExpression_Result *sp =
+        OrgBktYyc_MartixEE_RegularExpression_Matches(command, OrgBktYyc_MartixEE_Module_MatrixHand_RegexString_AddInto);
+
+    char addIntoAffect1 = *(command + ((sp->result + 1)->rm_so)),
+         addIntoAffect2 = *(command + ((sp->result + 6)->rm_so));
+    int addIntoIndex1 = OrgBktYyc_MartixEE_Utility_IntParse(command, (sp->result + 2)->rm_so),
+        addIntoIndex2 = OrgBktYyc_MartixEE_Utility_IntParse(command, (sp->result + 7)->rm_so);
+
+    OrgBktYyc_MartixEE_Matrix_unionMatrixItem sharedNum;
+    //judge whether have number and judge data type
+    if (mt->type == OrgBktYyc_MartixEE_Matrix_enumMatrixType_DOUBLE)
+    {
+        if ((sp->result + 5)->rm_so == (sp->result + 5)->rm_eo)
+            sharedNum.itemDOUBLE = (*(command + ((sp->result + 4)->rm_so)) == '+' ? 1 : -1);
+        else
+            sharedNum.itemDOUBLE = OrgBktYyc_MartixEE_Utility_DoubleParse(command, (sp->result + 3)->rm_so);
+    }
+    else
+    {
+        if ((sp->result + 5)->rm_so == (sp->result + 5)->rm_eo)
+            sharedNum.itemINTEGER = (*(command + ((sp->result + 4)->rm_so)) == '+' ? 1 : -1);
+        else
+            sharedNum.itemINTEGER = OrgBktYyc_MartixEE_Utility_IntParse(command, (sp->result + 3)->rm_so);
+    }
+
+    //free resources
+    OrgBktYyc_MartixEE_RegularExpression_Result_Free(sp);
+
+    //judge data
+    if (OrgBktYyc_MartixEE_Module_MatrixHand_CheckAddIntoInput(addIntoAffect1, addIntoIndex1, addIntoAffect2, addIntoIndex2))
+    {
+        //calc type
+        OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType addIntoType;
+        switch (addIntoAffect1)
+        {
+        case 'c':
+            addIntoType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_COLUMNS;
+            break;
+        case 'r':
+            addIntoType = OrgBktYyc_MartixEE_Matrix_enumMatrixAffectionType_ROWS;
+            break;
+        }
+
+        //correct parameter
+        addIntoIndex1--;
+        addIntoIndex2--;
+
+        OrgBktYyc_MartixEE_Matrix_classMatrix_AddInto(mt, addIntoType, addIntoIndex2, addIntoIndex1, &sharedNum);
+    }
+    else
+        printf("Illegal parameter!\n");
 }
 
 //=================================================================================================================================
