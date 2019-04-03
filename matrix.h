@@ -28,11 +28,6 @@ typedef union {
 	double itemDOUBLE;
 } OrgBktYyc_MartixEE_Matrix_unionMatrixItem;
 
-OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init();
-
-void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(
-	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj);
-
 void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Upgrade(
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj);
 

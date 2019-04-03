@@ -42,7 +42,8 @@ void OrgBktYyc_MartixEE_Module_MatrixHand_Main()
             OrgBktYyc_MartixEE_Module_MatrixHand_MatrixOperAddInto(mt, command);
         else
             printf("Unknow command!\n");
-
+    }
+    
     //release resources
     OrgBktYyc_MartixEE_Matrix_classMatrix_Dispose(mt);
 }

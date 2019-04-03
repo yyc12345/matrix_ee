@@ -5,17 +5,6 @@
 
 /*==================================================================================================*/
 
-OrgBktYyc_MartixEE_Matrix_unionMatrixItem *OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Init()
-{
-	return (OrgBktYyc_MartixEE_Matrix_unionMatrixItem *)malloc(sizeof(OrgBktYyc_MartixEE_Matrix_unionMatrixItem));
-}
-
-void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Dispose(
-	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj)
-{
-	free(obj);
-}
-
 void OrgBktYyc_MartixEE_Matrix_unionMatrixItem_Upgrade(
 	OrgBktYyc_MartixEE_Matrix_unionMatrixItem *obj)
 {
